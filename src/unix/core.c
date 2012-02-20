@@ -68,6 +68,7 @@ void uv_close(uv_handle_t* handle, uv_close_cb close_cb) {
   uv_timer_t* timer;
   uv_stream_t* stream;
   uv_process_t* process;
+  uv_io_t* io;
 
   handle->close_cb = close_cb;
 
@@ -132,6 +133,12 @@ void uv_close(uv_handle_t* handle, uv_close_cb close_cb) {
 
     case UV_FS_EVENT:
       uv__fs_event_destroy((uv_fs_event_t*)handle);
+      break;
+
+    case UV_IO:
+      io = (uv_io_t*) handle;
+      uv_io_stop(io);
+      io->fd = -1;
       break;
 
     default:
@@ -281,6 +288,11 @@ void uv__finish_close(uv_handle_t* handle) {
       break;
 
     case UV_FS_EVENT:
+      break;
+
+    case UV_IO:
+      assert(!ev_is_active(&((uv_io_t*)handle)->io_watcher));
+      assert(handle->fd == -1);
       break;
 
     default:
@@ -494,6 +506,9 @@ int uv_is_active(uv_handle_t* handle) {
 
     case UV_IDLE:
       return ev_is_active(&((uv_idle_t*)handle)->idle_watcher);
+
+    case UV_IO:
+      return ev_is_active(&((uv_io_t*)handle)->io_watcher);
 
     default:
       return 1;
@@ -881,3 +896,108 @@ uv_err_t uv_chdir(const char* dir) {
     return uv__new_sys_error(errno);
   }
 }
+
+
+/* IO watcher */
+void uv__io(EV_P_ ev_io* w, int revents) {
+  uv_io_t* io = container_of(w, uv_io_t, io_watcher);
+  int uv_events = 0;
+
+  assert(!(io->flags & UV_CLOSING));
+  assert(revents & (EV_READ | EV_WRITE));
+  assert(io->fd >= 0);
+
+  if (revents & EV_READ) {
+    uv_events |= UV_IO_READ;
+  }
+
+  if (revents & EV_WRITE) {
+    uv_events |= UV_IO_WRITE;
+  }
+
+  if (io->io_cb) {
+    io->io_cb(io, 0, uv_events);
+  }
+
+}
+
+
+int uv_io_init(uv_loop_t* loop, uv_io_t* handle) {
+  uv__handle_init(loop, (uv_handle_t*)handle, UV_IO);
+  loop->counters.io_init++;
+
+  handle->fd = -1;
+  handle->io_cb = NULL;
+  handle->events = 0;
+
+  ev_init(&handle->io_watcher, uv__io);
+  handle->io_watcher.data = handle;
+
+  return 0;
+}
+
+
+int uv_io_start(uv_io_t* io) {
+  int was_active = ev_is_active(&io->io_watcher);
+
+  ev_io_start(io->loop->ev, &io->io_watcher);
+
+  if (!was_active) {
+    ev_unref(io->loop->ev);
+  }
+
+  return 0;
+}
+
+
+int uv_io_stop(uv_io_t* io) {
+  int was_active = ev_is_active(&io->io_watcher);
+
+  ev_io_stop(io->loop->ev, &io->io_watcher);
+
+  if (was_active) {
+    ev_ref(io->loop->ev);
+  }
+
+  return 0;
+}
+
+
+int uv_io_set(uv_io_t* io, int fd, int events, uv_io_cb cb) {
+  io->io_cb = cb;
+  io->fd = fd;
+  io->events = 0;
+  if (events & UV_IO_READ)
+    io->events |= EV_READ;
+  if (events & UV_IO_WRITE)
+    io->events |= EV_WRITE;
+
+  ev_io_set(&io->io_watcher, io->fd, io->events);
+  return 0;
+}
+
+
+int uv_io_read(uv_io_t* handle, void* buf, size_t length) {
+  int result = read(handle->fd, buf, length);
+
+  if (result < 0) {
+    uv__set_sys_error(handle->loop, errno);
+    return -1;
+  }
+
+  return result;
+}
+
+
+int uv_io_write(uv_io_t* handle, void* buf, size_t length) {
+  int result = write(handle->fd, buf, length);
+
+  if (result < 0) {
+    uv__set_sys_error(handle->loop, errno);
+    return -1;
+  }
+
+  return result;
+}
+
+

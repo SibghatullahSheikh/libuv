@@ -233,4 +233,10 @@ typedef void* uv_lib_t;
 
 #endif
 
+/* UV_IO */
+#define UV_IO_PRIVATE_FIELDS \
+  ev_io io_watcher; \
+  uv_io_cb io_cb; \
+  int events; \
+
 #endif /* UV_UNIX_H */

@@ -142,7 +142,8 @@ typedef enum {
   UV_ARES_TASK,
   UV_ARES_EVENT,
   UV_PROCESS,
-  UV_FS_EVENT
+  UV_FS_EVENT,
+  UV_IO
 } uv_handle_type;
 
 typedef enum {
@@ -192,6 +193,7 @@ typedef struct uv_fs_s uv_fs_t;
 /* uv_fs_event_t is a subclass of uv_handle_t. */
 typedef struct uv_fs_event_s uv_fs_event_t;
 typedef struct uv_work_s uv_work_t;
+typedef struct uv_io_s uv_io_t;
 
 
 /*
@@ -279,6 +281,7 @@ typedef void (*uv_after_work_cb)(uv_work_t* req);
 */
 typedef void (*uv_fs_event_cb)(uv_fs_event_t* handle, const char* filename,
     int events, int status);
+typedef void (*uv_io_cb)(uv_io_t* handle, int status, int events);
 
 typedef enum {
   UV_LEAVE_GROUP = 0,
@@ -1351,6 +1354,32 @@ enum uv_fs_event_flags {
 UV_EXTERN int uv_fs_event_init(uv_loop_t* loop, uv_fs_event_t* handle,
     const char* filename, uv_fs_event_cb cb, int flags);
 
+
+enum uv_io_event {
+  UV_IO_READ = 1,
+  UV_IO_WRITE = 2
+};
+
+
+struct uv_io_s {
+  UV_HANDLE_FIELDS
+  UV_IO_PRIVATE_FIELDS
+};
+
+
+UV_EXTERN int uv_io_init(uv_loop_t* loop, uv_io_t* handle);
+
+UV_EXTERN int uv_io_set(uv_io_t* handle, int fd, int events, uv_io_cb cb);
+
+UV_EXTERN int uv_io_start(uv_io_t* handle);
+
+UV_EXTERN int uv_io_stop(uv_io_t* handle);
+
+UV_EXTERN int uv_io_read(uv_io_t* handle, void* buf, size_t length);
+
+UV_EXTERN int uv_io_write(uv_io_t* handle, void* buf, size_t length);
+
+
 /* Utility */
 
 /* Convert string ip addresses to binary structures */
@@ -1470,6 +1499,7 @@ struct uv_counters_s {
   uint64_t timer_init;
   uint64_t process_init;
   uint64_t fs_event_init;
+  uint64_t io_init;
 };
 
 
