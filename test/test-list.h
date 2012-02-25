@@ -141,6 +141,8 @@ TEST_DECLARE   (thread_create)
 TEST_DECLARE   (strlcpy)
 TEST_DECLARE   (strlcat)
 TEST_DECLARE   (counters_init)
+TEST_DECLARE   (io_error_uninitialized)
+TEST_DECLARE   (io_connect_ping)
 #ifdef _WIN32
 TEST_DECLARE   (spawn_detect_pipe_name_collisions_on_windows)
 TEST_DECLARE   (argument_escaping)
@@ -283,6 +285,9 @@ TASK_LIST_START
   TEST_ENTRY  (spawn_and_kill_with_std)
   TEST_ENTRY  (spawn_and_ping)
   TEST_ENTRY  (kill)
+
+  TEST_ENTRY  (io_error_uninitialized)
+  TEST_ENTRY  (io_connect_ping)
 #ifdef _WIN32
   TEST_ENTRY  (spawn_detect_pipe_name_collisions_on_windows)
   TEST_ENTRY  (argument_escaping)
