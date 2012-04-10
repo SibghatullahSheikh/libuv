@@ -1,6 +1,6 @@
 Library: c-ares, DNS resolver
 
-Version: 1.7.3 (11 June, 2010)
+Version: 1.7.6-dev (April, 2012)
 
 Authors: Greg Hudson, Daniel Stenberg
 
@@ -13,8 +13,6 @@ the documentation and other files distributed with it. To upgrade, run
 ./configure on linux, macintosh, solaris (and other supported platforms) and
 copy
 - ares_config.h
-- ares_setup.h
-- ares_build.h
 into the appropriate directory.
 
 

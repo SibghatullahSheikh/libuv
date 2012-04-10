@@ -1,5 +1,5 @@
 
-/* Copyright (C) 2009-2010 by Daniel Stenberg
+/* Copyright (C) 2009-2012 by Daniel Stenberg
  *
  * Permission to use, copy, modify, and distribute this
  * software and its documentation for any purpose and without
@@ -92,6 +92,20 @@ void ares_free_data(void *dataptr)
           ares_free_data(ptr->data.addr_node.next);
         break;
 
+      case ARES_DATATYPE_NAPTR_REPLY:
+
+        if (ptr->data.naptr_reply.next)
+          ares_free_data(ptr->data.naptr_reply.next);
+        if (ptr->data.naptr_reply.flags)
+          free(ptr->data.naptr_reply.flags);
+        if (ptr->data.naptr_reply.service)
+          free(ptr->data.naptr_reply.service);
+        if (ptr->data.naptr_reply.regexp)
+          free(ptr->data.naptr_reply.regexp);
+        if (ptr->data.naptr_reply.replacement)
+          free(ptr->data.naptr_reply.replacement);
+        break;
+
       default:
         return;
     }
@@ -138,7 +152,7 @@ void *ares_malloc_data(ares_datatype type)
       case ARES_DATATYPE_TXT_REPLY:
         ptr->data.txt_reply.next = NULL;
         ptr->data.txt_reply.txt = NULL;
-        ptr->data.txt_reply.length  = 0;
+        ptr->data.txt_reply.length = 0;
         break;
 
       case ARES_DATATYPE_ADDR_NODE:
@@ -146,6 +160,16 @@ void *ares_malloc_data(ares_datatype type)
         ptr->data.addr_node.family = 0;
         memset(&ptr->data.addr_node.addrV6, 0,
                sizeof(ptr->data.addr_node.addrV6));
+        break;
+
+      case ARES_DATATYPE_NAPTR_REPLY:
+        ptr->data.naptr_reply.next = NULL;
+        ptr->data.naptr_reply.flags = NULL;
+        ptr->data.naptr_reply.service = NULL;
+        ptr->data.naptr_reply.regexp = NULL;
+        ptr->data.naptr_reply.replacement = NULL;
+        ptr->data.naptr_reply.order = 0;
+        ptr->data.naptr_reply.preference = 0;
         break;
 
       default:

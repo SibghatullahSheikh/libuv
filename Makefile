@@ -53,6 +53,7 @@ CARES_OBJS += src/ares/ares_options.o
 CARES_OBJS += src/ares/ares_parse_a_reply.o
 CARES_OBJS += src/ares/ares_parse_aaaa_reply.o
 CARES_OBJS += src/ares/ares_parse_mx_reply.o
+CARES_OBJS += src/ares/ares_parse_naptr_reply.o
 CARES_OBJS += src/ares/ares_parse_ns_reply.o
 CARES_OBJS += src/ares/ares_parse_ptr_reply.o
 CARES_OBJS += src/ares/ares_parse_srv_reply.o
