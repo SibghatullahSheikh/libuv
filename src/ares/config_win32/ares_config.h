@@ -233,6 +233,9 @@
 /* The size of `int', as computed by sizeof. */
 #define SIZEOF_INT 4
 
+/* The size of `long', as computed by sizeof. */
+#define CARES_SIZEOF_LONG 4
+
 /* The size of `short', as computed by sizeof. */
 #define SIZEOF_SHORT 2
 
