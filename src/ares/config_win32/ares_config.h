@@ -365,5 +365,16 @@
 #define HAVE_SOCKADDR_IN6_SIN6_SCOPE_ID 1
 #endif
 
+/* ---------------------------------------------------------------- */
+/*                         SYSTEM ERROR CODES                       */
+/* ---------------------------------------------------------------- */
+
+#if defined(WIN32) && !defined(HAVE_ERRNO_H)
+#define ENOENT       ERROR_FILE_NOT_FOUND
+#define ESRCH        ERROR_PATH_NOT_FOUND
+#define ENOMEM       ERROR_NOT_ENOUGH_MEMORY
+#define ENOSPC       ERROR_INVALID_PARAMETER
+#endif
+
 
 #endif  /* __ARES_CONFIG_WIN32_H */
