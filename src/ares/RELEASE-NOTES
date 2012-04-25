@@ -1,26 +1,26 @@
-c-ares version 1.7.5
+c-ares version 1.8
+
+Changed:
+
+ o Added ares_parse_naptr_reply()
 
 Fixed:
 
- o detection of semicolon comments in resolv.conf
- o avoid using system's inet_net_pton affected by the WLB-2008080064 advisory
- o replacement ares_inet_net_pton affected by the WLB-2008080064 advisory
- o replacement ares_inet_ntop affected by potential out of bounds write
- o added install target to Makefile.msvc
- o only fall back to AF_INET searches when looking for AF_UNSPEC addresses
- o fixed ares_parse_*_reply memory leaks
- o Use correct sizeof in ares_getnameinfo()
- o IPv6-on-windows: find DNS servers correctly
- o man pages: docs for the c-ares utility programs
- o getservbyport replacement for Win CE
- o config_sortlist: (win32) missing else
- o advance_tcp_send_queue: avoid NULL ptr dereference
- o configure: fix a bashism
- o ares_expand_name: Fix encoded length for indirect root
-
+ o handle CNAME-only in ares_parse_aaaa_reply()
+ o support multiple DNS servers on Android
+ o check for __ANDROID__ in addition to ANDROID macro
+ o port numbers: convert them to network order
+ o get_iphlpapi_dns_info: fix buffer overrun
+ o configure: make CURL_CHECK_DEF ignore leading whitespace
+ o segfault triggered in ares_init_options()
+ o ares_getnameinfo's memcpy did not copy enough bytes
+ o ares_destroy: fix segfault in ares_destroy_options()
+ o CHANGES: generate from script
+ o configure: fix symbol hiding usability check
+ 
 Thanks go to these friendly people for their efforts and contributions:
 
- Yang Tse, Jakub Hrozek, Gisle Vanem, Tom Hughes, David Stuart, Dima Tisnek,
- Peter Pentchev, Stefan Buhler
+ Geert Uytterhoeven, Guenter Knauf, Yang Tse, Poul Thomas Lomholt,
+ Peter Griess, Albert Chin, Denis Bilenko
 
 Have fun!
