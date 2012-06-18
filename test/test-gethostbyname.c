@@ -71,7 +71,7 @@ static void prep_tcploopback() {
   optmask = ARES_OPT_SERVERS | ARES_OPT_TCP_PORT | ARES_OPT_FLAGS;
   options.servers = &test_server.sin_addr;
   options.nservers = 1;
-  options.tcp_port = htons(TEST_PORT);
+  options.tcp_port = TEST_PORT;
   options.flags = ARES_FLAG_USEVC;
 
   rc = uv_ares_init_options(uv_default_loop(), &channel, &options, optmask);
