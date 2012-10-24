@@ -192,6 +192,8 @@ TEST_DECLARE   (dlerror)
 TEST_DECLARE   (poll_duplex)
 TEST_DECLARE   (poll_unidirectional)
 TEST_DECLARE   (poll_close)
+TEST_DECLARE   (prepare_close)
+TEST_DECLARE   (prepare_close_reverse)
 #ifdef _WIN32
 TEST_DECLARE   (spawn_detect_pipe_name_collisions_on_windows)
 TEST_DECLARE   (argument_escaping)
@@ -382,6 +384,9 @@ TASK_LIST_START
   TEST_ENTRY  (poll_duplex)
   TEST_ENTRY  (poll_unidirectional)
   TEST_ENTRY  (poll_close)
+
+  TEST_ENTRY  (prepare_close)
+  TEST_ENTRY  (prepare_close_reverse)
 
   TEST_ENTRY  (spawn_fails)
   TEST_ENTRY  (spawn_exit_code)
