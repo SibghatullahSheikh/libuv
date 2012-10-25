@@ -322,8 +322,8 @@ static void uv__process_child_init(uv_process_options_t options,
       close(use_fd);
     }
 
-    if (fd <= 2)
-      uv__nonblock(fd, 0);
+    if (i <= 2)
+      uv__nonblock(use_fd, 0);
   }
 
   if (options.cwd && chdir(options.cwd)) {
