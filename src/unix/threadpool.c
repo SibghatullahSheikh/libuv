@@ -141,6 +141,7 @@ void uv__work_submit(uv_loop_t* loop,
 
 int uv__work_cancel(uv_loop_t* loop, uv_req_t* req, struct uv__work* w) {
   int cancelled;
+  int wq_empty;
 
   uv_mutex_lock(&mutex);
   uv_mutex_lock(&w->loop->wq_mutex);
@@ -148,6 +149,8 @@ int uv__work_cancel(uv_loop_t* loop, uv_req_t* req, struct uv__work* w) {
   cancelled = !ngx_queue_empty(&w->wq) && w->work != NULL;
   if (cancelled)
     ngx_queue_remove(&w->wq);
+
+  wq_empty = ngx_queue_empty(&wq);
 
   uv_mutex_unlock(&w->loop->wq_mutex);
   uv_mutex_unlock(&mutex);
@@ -158,6 +161,8 @@ int uv__work_cancel(uv_loop_t* loop, uv_req_t* req, struct uv__work* w) {
   w->work = uv__cancelled;
   uv_mutex_lock(&loop->wq_mutex);
   ngx_queue_insert_tail(&loop->wq, &w->wq);
+  if (wq_empty)
+    uv_async_send(&w->loop->wq_async);
   uv_mutex_unlock(&loop->wq_mutex);
 
   return 0;
