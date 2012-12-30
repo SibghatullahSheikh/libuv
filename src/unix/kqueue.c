@@ -150,14 +150,7 @@ void uv__io_poll(uv_loop_t* loop, int timeout) {
       if (errno != EINTR)
         abort();
 
-      if (timeout == 0)
-        return;
-
-      if (timeout == -1)
-        continue;
-
-      /* Interrupted by a signal. Update timeout and poll again. */
-      goto update_timeout;
+      return;
     }
 
     nevents = 0;
@@ -241,7 +234,6 @@ void uv__io_poll(uv_loop_t* loop, int timeout) {
     if (timeout == -1)
       continue;
 
-update_timeout:
     assert(timeout > 0);
 
     diff = uv_hrtime() / 1000000;

@@ -150,15 +150,8 @@ void uv__io_poll(uv_loop_t* loop, int timeout) {
         abort();
     }
 
-    if (events[0].portev_source == 0) {
-      if (timeout == 0)
-        return;
-
-      if (timeout == -1)
-        continue;
-
-      goto update_timeout;
-    }
+    if (events[0].portev_source == 0)
+      return;
 
     if (nfds == 0) {
       assert(timeout != -1);
@@ -208,7 +201,6 @@ void uv__io_poll(uv_loop_t* loop, int timeout) {
     if (timeout == -1)
       continue;
 
-update_timeout:
     assert(timeout > 0);
 
     diff = uv_hrtime() / 1000000;
