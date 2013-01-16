@@ -162,7 +162,6 @@ typedef struct {
 } uv_lib_t;
 
 #define UV_LOOP_PRIVATE_FIELDS                                                \
-  unsigned long flags;                                                        \
   int backend_fd;                                                             \
   ngx_queue_t pending_queue;                                                  \
   ngx_queue_t watcher_queue;                                                  \
