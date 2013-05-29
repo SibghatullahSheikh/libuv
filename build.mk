@@ -68,6 +68,7 @@ TESTS= \
 	test/test-barrier.o \
 	test/test-callback-order.o \
 	test/test-callback-stack.o \
+	test/test-close-order.o \
 	test/test-condvar.o \
 	test/test-connection-fail.o \
 	test/test-cwd-and-chdir.o \
